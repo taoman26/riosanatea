@@ -379,18 +379,22 @@ class atena_image_maker():
 
 		atena_image = self.atena_baseimage.copy()
 
+		# フォントサイズの倍率を取得
+		resize_percent = self.parts_dict.get( "resize％", [ 100, 100 ] )
+		font_scale = resize_percent[0] / 100.0
+
 		#宛先の郵便番号
-		self.postalcode_setting( image = atena_image, postal_code = data_dict.get( "postal-code", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "postalcode-fontsize" ], letter_size_xy = self.parts_dict[ "postalcode-letter-areasize" ], position_xy = self.parts_dict[ "postalcode-position" ], center_mm_list = self.parts_dict[ "postalcode-placement" ], direction = self.parts_dict[ "postalcode-direction" ], mat_size = self.postalcode_fontmat_size )
+		self.postalcode_setting( image = atena_image, postal_code = data_dict.get( "postal-code", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "postalcode-fontsize" ] * font_scale ), letter_size_xy = self.parts_dict[ "postalcode-letter-areasize" ], position_xy = self.parts_dict[ "postalcode-position" ], center_mm_list = self.parts_dict[ "postalcode-placement" ], direction = self.parts_dict[ "postalcode-direction" ], mat_size = self.postalcode_fontmat_size )
 
 		#宛名
-		name_result = self.parts_setting( image = atena_image, text1 = data_dict.get( "name1", "" ), text2 = data_dict.get( "name2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "name-fontsize" ], position_xy = self.parts_dict[ "name-position" ], size_xy = self.parts_dict[ "name-areasize" ], mat_size = self.name_fontmat_size, mm_space = self.parts_dict[ "name-bind-space" ], direction = self.parts_dict[ "name-direction" ], alignment_mode = "name" )
+		name_result = self.parts_setting( image = atena_image, text1 = data_dict.get( "name1", "" ), text2 = data_dict.get( "name2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "name-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "name-position" ], size_xy = self.parts_dict[ "name-areasize" ], mat_size = self.name_fontmat_size, mm_space = self.parts_dict[ "name-bind-space" ], direction = self.parts_dict[ "name-direction" ], alignment_mode = "name" )
 
 		#名前が正しく貼り付けできていれば（辞書型が返ってくれば）
 		#名前のフォントサイズなどを元に敬称の画像を作り、返値から位置を算出し貼り付ける。
 		if isinstance( name_result, dict ) and data_dict.get( "honorific", "" ) != "" and not re.match( "^( |　)+$", data_dict.get( "honorific" ) ):
 
 			#敬称画像の作成
-			honorific_image_origine = self.vertical_text( data_dict.get( "honorific", "" ), self.parts_dict[ "fontfile" ], self.parts_dict[ "name-fontsize" ], mat_size = self.name_fontmat_size )
+			honorific_image_origine = self.vertical_text( data_dict.get( "honorific", "" ), self.parts_dict[ "fontfile" ], int( self.parts_dict[ "name-fontsize" ] * font_scale ), mat_size = self.name_fontmat_size )
 
 			#名前が一列だけなら中央に一つ敬称を付ける。
 			if len( name_result.get( "oneline-areasize" ) ) == 1:
@@ -420,16 +424,16 @@ class atena_image_maker():
 				pil_through_paste_greyscale( atena_image, honorific_image2, ( name_result.get( "start-point" )[0], name_result.get( "end-point" )[1] + int( self.parts_dict[ "honorific-space" ] * self.mm_pixel_rate ) ), 255 )
 
 		#宛先の住所
-		self.parts_setting( image = atena_image, text1 = data_dict.get( "address1", "" ), text2 = data_dict.get( "address2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "address-fontsize" ], position_xy = self.parts_dict[ "address-position" ], size_xy = self.parts_dict[ "address-areasize" ], mat_size = self.address_fontmat_size, mm_space = self.parts_dict[ "address-bind-space" ], direction = self.parts_dict[ "address-direction" ], alignment_mode = "address" )
+		self.parts_setting( image = atena_image, text1 = data_dict.get( "address1", "" ), text2 = data_dict.get( "address2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "address-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "address-position" ], size_xy = self.parts_dict[ "address-areasize" ], mat_size = self.address_fontmat_size, mm_space = self.parts_dict[ "address-bind-space" ], direction = self.parts_dict[ "address-direction" ], alignment_mode = "address" )
 
 		#差出人側の郵便番号
-		self.postalcode_setting( image = atena_image, postal_code = data_dict.get( "our-postal-code", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "our-postalcode-fontsize" ], letter_size_xy = self.parts_dict[ "our-postalcode-letter-areasize" ], position_xy = self.parts_dict[ "our-postalcode-position" ], center_mm_list = self.parts_dict[ "our-postalcode-placement" ], direction = self.parts_dict[ "our-postalcode-direction" ], mat_size = self.our_postalcode_fontmat_size )
+		self.postalcode_setting( image = atena_image, postal_code = data_dict.get( "our-postal-code", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "our-postalcode-fontsize" ] * font_scale ), letter_size_xy = self.parts_dict[ "our-postalcode-letter-areasize" ], position_xy = self.parts_dict[ "our-postalcode-position" ], center_mm_list = self.parts_dict[ "our-postalcode-placement" ], direction = self.parts_dict[ "our-postalcode-direction" ], mat_size = self.our_postalcode_fontmat_size )
 
 		#差出人の氏名
-		self.parts_setting( image = atena_image, text1 = data_dict.get( "our-name1", "" ), text2 = data_dict.get( "our-name2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "our-name-fontsize" ], position_xy = self.parts_dict[ "our-name-position" ], size_xy = self.parts_dict[ "our-name-areasize" ], mat_size = self.our_name_fontmat_size, mm_space = self.parts_dict[ "our-name-bind-space" ], direction = self.parts_dict[ "our-name-direction" ], alignment_mode = "name")
+		self.parts_setting( image = atena_image, text1 = data_dict.get( "our-name1", "" ), text2 = data_dict.get( "our-name2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "our-name-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "our-name-position" ], size_xy = self.parts_dict[ "our-name-areasize" ], mat_size = self.our_name_fontmat_size, mm_space = self.parts_dict[ "our-name-bind-space" ], direction = self.parts_dict[ "our-name-direction" ], alignment_mode = "name")
 
 		#差出人の住所
-		self.parts_setting( image = atena_image, text1 = data_dict.get( "our-address1", "" ), text2 = data_dict.get( "our-address2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = self.parts_dict[ "our-address-fontsize" ], position_xy = self.parts_dict[ "our-address-position" ], size_xy = self.parts_dict[ "our-address-areasize" ], mat_size = self.our_address_fontmat_size, mm_space = self.parts_dict[ "our-address-bind-space" ], direction = self.parts_dict[ "our-address-direction" ], alignment_mode = "address" )
+		self.parts_setting( image = atena_image, text1 = data_dict.get( "our-address1", "" ), text2 = data_dict.get( "our-address2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "our-address-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "our-address-position" ], size_xy = self.parts_dict[ "our-address-areasize" ], mat_size = self.our_address_fontmat_size, mm_space = self.parts_dict[ "our-address-bind-space" ], direction = self.parts_dict[ "our-address-direction" ], alignment_mode = "address" )
 
 		#郵便番号や住所や名前といった各パーツの最大範囲を示す枠を付加する
 		if area_frame is True:
@@ -729,7 +733,7 @@ class frame_plus( wx.Frame ):
 
 		self.paper_size_data = { "category" : "はがき", "width" : 100, "height" : 148 }
 
-		self.software_setting = { "window_maximize" : False, "window_size" : [ 1300, 760 ], "table-font" : "", "table-fontsize" : 0, "write-fileinfo-on-titlebar" : "filename"  }
+		self.software_setting = { "window_maximize" : False, "window_size" : [ 1600, 760 ], "table-font" : "", "table-fontsize" : 0, "write-fileinfo-on-titlebar" : "filename"  }
 
 		self.column_etc_dictionary = { "column-postalcode" : 1, "column-address1" : 2, "column-address2" : 3, "column-name1" : 4, "column-name2" : 5, "enable-default-honorific" : True, "default-honorific" : "様", "printer-space-top,bottom,left,right" : [ 0, 0, 0, 0 ], "print-control" : False, "print-control-column" : 0, "print-sign" : "×", "print-or-ignore" : "ignore", "enable-honorific-in-table" : True, "column-honorific" : 6, "sampleimage-areaframe" : True, "upside-down-print" : False }
 
@@ -894,11 +898,17 @@ class frame_plus( wx.Frame ):
 		self.row_column_button.SetToolTip( "末尾に行や列を追加したり、最後の行や列を削除します" )
 		self.pcode_grep_button.SetToolTip( "この検索には、郵政公社が配布しているデータが必要です" )
 
-		self.print_start_line = wx.SpinCtrl( self.atena_tab_panel, wx.ID_ANY, min = 1, max=1000000, size = ( 130, 30 ) )
-		self.print_end_line = wx.SpinCtrl( self.atena_tab_panel, wx.ID_ANY, min = 1, max=1000000, size = ( 130, 30 ) )
-		self.print_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "宛名印刷する" )
+		self.print_start_line = wx.SpinCtrl( self.atena_tab_panel, wx.ID_ANY, value = "1", min = 1, max = 1000000, size = ( 150, 30 ) )
+		self.print_start_line.SetMinSize( ( 150, 30 ) )
+		self.print_end_line = wx.SpinCtrl( self.atena_tab_panel, wx.ID_ANY, value = "1", min = 1, max = 1000000, size = ( 150, 30 ) )
+		self.print_end_line.SetMinSize( ( 150, 30 ) )
+		self.print_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "宛名印刷する", size = ( 120, 30 ) )
+		self.print_button.SetMinSize( ( 120, 30 ) )
+		self.print_button.SetMaxSize( ( 120, 30 ) )
 		self.print_button.SetToolTip( "ここをクリックすると印刷を開始します。印刷処理中は中止ボタンに変わります（すでに印刷ジョブに処理し終わった分までは取り消しません）" )
-		self.preview_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "イメージ確認" )
+		self.preview_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "イメージ確認", size = ( 120, 30 ) )
+		self.preview_button.SetMinSize( ( 120, 30 ) )
+		self.preview_button.SetMaxSize( ( 120, 30 ) )
 		self.preview_button.SetToolTip( "ここをクリックすると、指定された範囲の各行をどのような外観で印刷するかを、実際に印刷しないで画面上で確認できます" )
 
 		self.upsidedown_print_checkbox = wx.CheckBox( self.atena_tab_panel, wx.ID_ANY, "反転印刷" )
@@ -907,31 +917,36 @@ class frame_plus( wx.Frame ):
 		else:
 			self.upsidedown_print_checkbox.SetValue( False )
 
-		self.close_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "終了", size = ( 60, -1 ) )
+		self.close_button = wx.Button( self.atena_tab_panel, wx.ID_ANY, "終了", size = ( 60, 30 ) )
+		self.close_button.SetMinSize( ( 60, 30 ) )
+		self.close_button.SetMaxSize( ( 60, 30 ) )
 		self.close_button.SetToolTip( "ウィンドウを閉じて、このソフトを終了します" )
 
 		self.upsidedown_print_checkbox.SetToolTip( "封筒の印刷を安定させるために、下方向からプリンターに給紙して180°反転した印刷にしたい場合は、これにチェックを入れてください" )
 
 		#CSVファイルのボタンと印刷入力欄を1行にまとめる
 		self.csv_and_print_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		self.csv_and_print_sizer.Add( self.csvopen_button )
-		self.csv_and_print_sizer.Add( self.csvsave_button )
+		self.csv_and_print_sizer.Add( self.csvopen_button, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( self.csvsave_button, 0, wx.FIXED_MINSIZE )
 		self.csv_and_print_sizer.Add( wx.StaticLine( self.atena_tab_panel, style = wx.LI_VERTICAL ), 0, wx.LEFT | wx.RIGHT, 4 )
-		self.csv_and_print_sizer.Add( self.history_button )
-		self.csv_and_print_sizer.Add( self.grep_button )
-		self.csv_and_print_sizer.Add( self.row_column_button )
-		self.csv_and_print_sizer.Add( self.pcode_grep_button )
+		self.csv_and_print_sizer.Add( self.history_button, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( self.grep_button, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( self.row_column_button, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( self.pcode_grep_button, 0, wx.FIXED_MINSIZE )
 		self.csv_and_print_sizer.Add( wx.StaticLine( self.atena_tab_panel, style = wx.LI_VERTICAL ), 0, wx.LEFT | wx.RIGHT, 6 )
-		self.csv_and_print_sizer.Add( self.print_start_line )
-		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "行から" ) )
-		self.csv_and_print_sizer.Add( self.print_end_line )
-		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "行までを" ) )
-		self.csv_and_print_sizer.Add( self.print_button )
-		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "ないし" ) )
-		self.csv_and_print_sizer.Add( self.preview_button )
-		self.csv_and_print_sizer.Add( self.upsidedown_print_checkbox )
-		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, " " ), 1, wx.EXPAND )
-		self.csv_and_print_sizer.Add( self.close_button, 0, wx.RIGHT, 10 )
+		self.csv_and_print_sizer.Add( self.print_start_line, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "行から" ), 0, wx.FIXED_MINSIZE | wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 2 )
+		self.csv_and_print_sizer.Add( self.print_end_line, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "行までを" ), 0, wx.FIXED_MINSIZE | wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 2 )
+		self.csv_and_print_sizer.Add( self.print_button, 0, wx.FIXED_MINSIZE | wx.LEFT, 2 )
+		self.csv_and_print_sizer.Add( wx.StaticText( self.atena_tab_panel, wx.ID_ANY, "ないし" ), 0, wx.FIXED_MINSIZE | wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 4 )
+		self.csv_and_print_sizer.Add( self.preview_button, 0, wx.FIXED_MINSIZE )
+		self.csv_and_print_sizer.Add( self.upsidedown_print_checkbox, 0, wx.FIXED_MINSIZE | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 8 )
+		self.csv_and_print_sizer.Add( self.close_button, 0, wx.FIXED_MINSIZE | wx.LEFT, 8 )
+
+		#SpinCtrlの初期値を設定
+		self.print_start_line.SetValue( 1 )
+		self.print_end_line.SetValue( 1 )
 
 		#CSV関連のボタンと印刷行の入力欄をバインド
 		self.csvopen_button.Bind( wx.EVT_BUTTON, self.fileselect_and_opencsv )
@@ -1029,8 +1044,8 @@ class frame_plus( wx.Frame ):
 
 		#2つのボタンを横一列にまとめる
 		self.twin_buttons_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		self.twin_buttons_sizer.Add( self.layoutfile_save_button, 1, wx.ALL | wx.EXPAND, 4 )
-		self.twin_buttons_sizer.Add( self.layoutfile_open_button, 1, wx.ALL | wx.EXPAND, 4 )
+		self.twin_buttons_sizer.Add( self.layoutfile_save_button, 0, wx.ALL | wx.FIXED_MINSIZE, 4 )
+		self.twin_buttons_sizer.Add( self.layoutfile_open_button, 0, wx.ALL | wx.FIXED_MINSIZE, 4 )
 
 		#○○○○○フォントの選択○○○○○
 
@@ -1077,8 +1092,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○郵便番号○○○○○
 
 		#郵便番号の起点となる位置
-		self.postalcode_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.postalcode_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.postalcode_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.postalcode_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.postalcode_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.postalcode_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "左上から右に" ) )
@@ -1109,8 +1124,8 @@ class frame_plus( wx.Frame ):
 		self.postalcode_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_postalcode_direction_vertical )
 
 		#宛先郵便番号の一字あたりのサイズ
-		self.postalcode_letterwidth = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.postalcode_letterheight = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.postalcode_letterwidth = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.postalcode_letterheight = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.postalcode_lettersize_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.postalcode_lettersize_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "一文字あたり、幅" ) )
@@ -1169,8 +1184,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○宛先氏名欄○○○○○
 
 		#宛先氏名の起点となる位置
-		self.destination_name_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.destination_name_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.destination_name_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_name_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.destination_name_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.destination_name_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
@@ -1201,8 +1216,8 @@ class frame_plus( wx.Frame ):
 		self.destination_name_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_destination_name_direction_vertical )
 
 		#宛先氏名を書く領域のサイズ上限
-		self.destination_name_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.destination_name_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.destination_name_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_name_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.destination_name_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.destination_name_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "宛先氏名の幅：" ) )
@@ -1217,7 +1232,7 @@ class frame_plus( wx.Frame ):
 		self.default_destination_name_position = self.image_generator.get_parts_data( "name-position" )
 
 		#宛先氏名の二列の間隔
-		self.destination_name_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
+		self.destination_name_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
 
 		#1行にまとめる
 		self.destination_name_space_sizer = wx.BoxSizer( wx.HORIZONTAL )
@@ -1254,8 +1269,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○宛先住所○○○○○
 
 		#宛先住所の起点となる位置
-		self.destination_address_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.destination_address_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.destination_address_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_address_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.destination_address_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.destination_address_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
@@ -1286,8 +1301,8 @@ class frame_plus( wx.Frame ):
 		self.destination_address_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_destination_address_direction_vertical )
 
 		#宛先住所を書く領域のサイズ上限
-		self.destination_address_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.destination_address_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.destination_address_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_address_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.destination_address_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.destination_address_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "宛先住所の幅：" ) )
@@ -1301,7 +1316,7 @@ class frame_plus( wx.Frame ):
 		self.destination_address_size_y.Bind( wx.EVT_SPINCTRL, self.send_destination_address_size_y )
 
 		#宛先住所の二列の間隔
-		self.destination_address_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
+		self.destination_address_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
 
 		#1行にまとめる
 		self.destination_address_space_sizer = wx.BoxSizer( wx.HORIZONTAL )
@@ -1324,8 +1339,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○差出人の郵便番号○○○○○
 
 		#差出人の郵便番号の起点となる位置
-		self.our_postalcode_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_postalcode_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.our_postalcode_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_postalcode_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_postalcode_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_postalcode_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "左上から右に" ) )
@@ -1356,8 +1371,8 @@ class frame_plus( wx.Frame ):
 		self.our_postalcode_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_our_postalcode_direction_vertical )
 
 		#差出人郵便番号の一字あたりのサイズ
-		self.our_postalcode_letterwidth = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_postalcode_letterheight = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
+		self.our_postalcode_letterwidth = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_postalcode_letterheight = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_postalcode_lettersize_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_postalcode_lettersize_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "一文字あたり、幅" ) )
@@ -1417,8 +1432,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○差出人氏名欄○○○○○
 
 		#差出人氏名の起点となる位置
-		self.our_name_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_name_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.our_name_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_name_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_name_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_name_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
@@ -1449,8 +1464,8 @@ class frame_plus( wx.Frame ):
 		self.our_name_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_our_name_direction_vertical )
 
 		#差出人氏名を書く領域のサイズ上限
-		self.our_name_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_name_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.our_name_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_name_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_name_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_name_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "差出人氏名の幅：" ) )
@@ -1464,7 +1479,7 @@ class frame_plus( wx.Frame ):
 		self.our_name_size_y.Bind( wx.EVT_SPINCTRL, self.send_our_name_size_y )
 
 		#差出人氏名の二列の間隔
-		self.our_name_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
+		self.our_name_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
 
 		#1行にまとめる
 		self.our_name_space_sizer = wx.BoxSizer( wx.HORIZONTAL )
@@ -1487,8 +1502,8 @@ class frame_plus( wx.Frame ):
 		#○○○○○差出人住所○○○○○
 
 		#差出人住所の起点となる位置
-		self.our_address_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_address_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.our_address_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_address_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_address_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_address_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
@@ -1519,8 +1534,8 @@ class frame_plus( wx.Frame ):
 		self.our_address_direction_vertical.Bind( wx.EVT_COMBOBOX, self.send_our_address_direction_vertical )
 
 		#差出人住所を書く領域のサイズ上限
-		self.our_address_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
-		self.our_address_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500 )
+		self.our_address_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.our_address_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
 		#1行にまとめる
 		self.our_address_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.our_address_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "差出人住所の幅：" ) )
@@ -1534,7 +1549,7 @@ class frame_plus( wx.Frame ):
 		self.our_address_size_y.Bind( wx.EVT_SPINCTRL, self.send_our_address_size_y )
 
 		#差出人住所の二列の間隔
-		self.our_address_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450 )
+		self.our_address_space = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
 
 		#1行にまとめる
 		self.our_address_space_sizer = wx.BoxSizer( wx.HORIZONTAL )
@@ -1593,7 +1608,26 @@ class frame_plus( wx.Frame ):
 		self.printspace_sb_sizer = wx.StaticBoxSizer( self.printspace_sbox, wx.VERTICAL )
 		self.printspace_sb_sizer.Add( wx.StaticText( self.right_panel, wx.ID_ANY, "枠だけの印刷をして、測った値を入れる （見本画像の中で、赤い枠で表示されます）" ), 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 		self.printspace_sb_sizer.Add( self.print_space_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
-		self.printspace_sb_sizer.Add( self.frameprint_button, 1, wx.ALIGN_CENTER )
+		self.printspace_sb_sizer.Add( self.frameprint_button, 0, wx.ALIGN_CENTER | wx.FIXED_MINSIZE )
+
+		#○○○○○フォントサイズ調整○○○○○
+		self.fontsize_scale = wx.SpinCtrl( self.right_panel, wx.ID_ANY, value = str( self.image_generator.get_parts_data( "resize％" )[0] ), min = 50, max = 150, size = ( 110, 30 ) )
+		self.fontsize_scale.SetToolTip( "フォントサイズを50%～150%の範囲で調整できます。100%が標準サイズです。" )
+		
+		#1行にまとめる
+		self.fontsize_scale_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.fontsize_scale_sizer.Add( wx.StaticText( self.right_panel, wx.ID_ANY, "フォントサイズ：" ) )
+		self.fontsize_scale_sizer.Add( self.fontsize_scale )
+		self.fontsize_scale_sizer.Add( wx.StaticText( self.right_panel, wx.ID_ANY, "%" ) )
+		
+		#フォントサイズ調整をバインド
+		self.fontsize_scale.Bind( wx.EVT_SPINCTRL, self.send_fontsize_scale )
+		
+		#枠（StaticBoxSizer）に入れる
+		self.fontsize_sbox = wx.StaticBox( self.right_panel, wx.ID_ANY, "フォントサイズ調整" )
+		self.fontsize_sb_sizer = wx.StaticBoxSizer( self.fontsize_sbox, wx.VERTICAL )
+		self.fontsize_sb_sizer.Add( wx.StaticText( self.right_panel, wx.ID_ANY, "文字が大きすぎる／小さすぎる場合に調整してください" ), 0, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10 )
+		self.fontsize_sb_sizer.Add( self.fontsize_scale_sizer, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 10 )
 
 
 		self.left_sizer = wx.BoxSizer( wx.VERTICAL )
@@ -1630,6 +1664,7 @@ class frame_plus( wx.Frame ):
 		self.right_surface_sizer.Add( self.redframe_notes, 0, wx.ALIGN_CENTER_HORIZONTAL )
 
 		self.right_surface_sizer.Add( self.printspace_sb_sizer )
+		self.right_surface_sizer.Add( self.fontsize_sb_sizer, 0, wx.TOP | wx.EXPAND, 10 )
 
 		self.right_panel.SetSizer( self.right_surface_sizer )
 		self.right_panel.SetupScrolling()
@@ -1944,7 +1979,7 @@ class frame_plus( wx.Frame ):
 		self.setting_tab_sizer.Add( self.window_mode_size_sizer, 0, wx.ALL | wx.EXPAND, 10 )
 		self.setting_tab_sizer.Add( self.csv_table_font_sizer, 0, wx.ALL | wx.EXPAND, 10 )
 		self.setting_tab_sizer.Add( self.titlebar_mode_sizer, 0, wx.ALL | wx.EXPAND, 10 )
-		self.setting_tab_sizer.Add( self.save_settings_button, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.BOTTOM )
+		self.setting_tab_sizer.Add( self.save_settings_button, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.BOTTOM | wx.FIXED_MINSIZE )
 
 		self.setting_tab_panel.SetSizer( self.setting_tab_sizer )
 		self.setting_tab_panel.SetupScrolling()
@@ -1955,6 +1990,11 @@ class frame_plus( wx.Frame ):
 
 		#最後にパネルにサンプルイメージを表示しておく
 		self.show_sample_image( cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
+
+		#レイアウトを確定させる（起動時のボタン重なり防止）
+		self.atena_tab_panel.Layout()
+		self.Layout()
+		self.Refresh()
 
 
 	#レイアウトタブの左半分のフォントや配置の入力欄の初期値を決める関数
@@ -2329,6 +2369,11 @@ class frame_plus( wx.Frame ):
 
 	def send_print_space_right( self, event ):
 		self.change_columndict_image_restructure_int( dict_key = "printer-space-top,bottom,left,right", value = self.print_space_right.GetValue(), list_position = 3, make_atena_image = False )
+
+	def send_fontsize_scale( self, event ):
+		scale_value = self.fontsize_scale.GetValue()
+		self.image_generator.set_parts_data( "resize％", [ scale_value, scale_value ] )
+		self.show_sample_image( cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
 
 	#上記の「make_atena_image = False」は、サンプルイメージの更新はするが
 	#ハガキ画像の再取得はしない（赤枠合成以降の処理のみやりなおす）
@@ -3724,7 +3769,16 @@ class frame_plus( wx.Frame ):
 
 				print_grayscale_image = self.image_generator.get_cutted_atena_image( data_dict = print_data, space_tblr_mm_list = self.column_etc_dictionary[ "printer-space-top,bottom,left,right" ], cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
 
-				pil_printing( pil_image = print_grayscale_image, paper_size = print_size, upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
+				try:
+					pil_printing( pil_image = print_grayscale_image, paper_size = print_size, upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
+				except Exception as e:
+					# 印刷エラーが発生した場合、ダイアログで表示して処理を中止
+					error_message = str(e)
+					wx.CallAfter( self.print_button.SetLabel, "宛名印刷する" )
+					wx.CallAfter( self.SetStatusText, "印刷エラーが発生しました" )
+					wx.CallAfter( self.stop_message_dialog, error_message )
+					self.print_stop_flag = False
+					return False
 
 			#印刷中止用の変数がTrueなら、ステータスバーやダイアログで中止を表明して関数を終了する
 			if self.print_stop_flag is True:
@@ -4140,7 +4194,7 @@ class PostalcodeSearchDialog( wx.Dialog ):
 		#1行にまとめる
 		self.input_and_go = wx.BoxSizer( wx.HORIZONTAL )
 		self.input_and_go.Add( self.input_search_word, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
-		self.input_and_go.Add( self.search_button )
+		self.input_and_go.Add( self.search_button, 0, wx.FIXED_MINSIZE )
 		self.input_and_go.Add( self.hitting_message, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 
 		#検索結果の表示領域
@@ -4156,7 +4210,7 @@ class PostalcodeSearchDialog( wx.Dialog ):
 		sizer.Add( wx.StaticText( self, wx.ID_ANY, "　　なお、検索結果は必要な部分を手動でコピーしてお使いください" ), 0, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10 )
 		sizer.Add( self.input_and_go, 0, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10 )
 		sizer.Add( self.find_result, 1, wx.ALL | wx.EXPAND, 10 )
-		sizer.Add( self.ok_button, 0, wx.ALIGN_CENTER_HORIZONTAL )
+		sizer.Add( self.ok_button, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.FIXED_MINSIZE )
 		self.SetSizer( sizer )
 
 
@@ -4200,8 +4254,8 @@ class RowColPlusMinusDialog( wx.Dialog ):
 		self.ok_button = wx.Button( self, wx.ID_OK, "OK" )
 		self.cancel_button = wx.Button( self, wx.ID_CANCEL, "Cancel" )
 		button_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		button_sizer.Add( self.ok_button )
-		button_sizer.Add( self.cancel_button )
+		button_sizer.Add( self.ok_button, 0, wx.FIXED_MINSIZE )
+		button_sizer.Add( self.cancel_button, 0, wx.FIXED_MINSIZE )
 
 		sizer = wx.BoxSizer( wx.VERTICAL )
 		sizer.Add( self.radio_box, 1, wx.ALL | wx.EXPAND, 10 )
@@ -4261,8 +4315,8 @@ class SearchReplaceDialog( wx.Dialog ):
 		self.ok_button = wx.Button( self, wx.ID_OK, "OK" )
 		self.cancel_button = wx.Button( self, wx.ID_CANCEL, "Cancel" )
 		button_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		button_sizer.Add( self.ok_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 50 )
-		button_sizer.Add( self.cancel_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 50 )
+		button_sizer.Add( self.ok_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 50 )
+		button_sizer.Add( self.cancel_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 50 )
 
 		sizer = wx.BoxSizer( wx.VERTICAL )
 		sizer.Add( self.input_box_message, 0, wx.ALL | wx.EXPAND, 10 )
@@ -4347,8 +4401,8 @@ class HistoryDialog( wx.Dialog ):
 		self.ok_button = wx.Button( self, wx.ID_OK, "OK" )
 		self.cancel_button = wx.Button( self, wx.ID_CANCEL, "Cancel" )
 		button_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		button_sizer.Add( self.ok_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 50 )
-		button_sizer.Add( self.cancel_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 50 )
+		button_sizer.Add( self.ok_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 50 )
+		button_sizer.Add( self.cancel_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 50 )
 
 		#ダイアログに配置していく
 		sizer = wx.BoxSizer( wx.VERTICAL )
@@ -4388,8 +4442,8 @@ class AutoRelocationAndPartsDownDialog( wx.Dialog ):
 		self.ok_button.SetDefault()
 
 		twin_buttons_sizer = wx.BoxSizer( wx.HORIZONTAL )
-		twin_buttons_sizer.Add( self.cancel_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0 )
-		twin_buttons_sizer.Add( self.ok_button, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0 )
+		twin_buttons_sizer.Add( self.cancel_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 0 )
+		twin_buttons_sizer.Add( self.ok_button, 0, wx.LEFT | wx.RIGHT | wx.FIXED_MINSIZE, 0 )
 
 		sizer = wx.BoxSizer( wx.VERTICAL )
 		sizer.Add( self.message, 0, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10 )

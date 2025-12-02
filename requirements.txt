@@ -6,3 +6,6 @@ wxPython>=4.1.0
 
 # 画像処理
 Pillow>=9.0.0
+
+# PDF生成（印刷用）
+reportlab>=3.6.0
