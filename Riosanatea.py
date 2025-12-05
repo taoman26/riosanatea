@@ -2956,6 +2956,8 @@ class frame_plus( wx.Frame ):
 
 				#各パーツの位置の自動調整
 				new_parts_dict[ "postalcode-position" ] = list_composite( standard_parts_dict[ "postalcode-position" ], parts_relocate_rate, 1 )
+				new_parts_dict[ "company-position" ] = list_composite( standard_parts_dict[ "company-position" ], parts_relocate_rate, 1 )
+				new_parts_dict[ "department-position" ] = list_composite( standard_parts_dict[ "department-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "name-position" ] = list_composite( standard_parts_dict[ "name-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "address-position" ] = list_composite( standard_parts_dict[ "address-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "our-postalcode-position" ] = list_composite( standard_parts_dict[ "our-postalcode-position" ], parts_relocate_rate, 1 )
@@ -2964,6 +2966,8 @@ class frame_plus( wx.Frame ):
 
 				#各パーツを収める範囲の自動調整
 				new_parts_dict[ "postalcode-letter-areasize" ] = list_composite( standard_parts_dict[ "postalcode-letter-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
+				new_parts_dict[ "company-areasize" ] = list_composite( standard_parts_dict[ "company-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
+				new_parts_dict[ "department-areasize" ] = list_composite( standard_parts_dict[ "department-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "name-areasize" ] = list_composite( standard_parts_dict[ "name-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "address-areasize" ] = list_composite( standard_parts_dict[ "address-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "our-postalcode-letter-areasize" ] = list_composite( standard_parts_dict[ "our-postalcode-letter-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
@@ -2975,12 +2979,14 @@ class frame_plus( wx.Frame ):
 				new_parts_dict[ "our-postalcode-placement" ] = [ int( i * parts_relocate_rate[0] * parts_size_adjust_rate ) for i in standard_parts_dict[ "our-postalcode-placement" ] ]
 
 				#住所氏名における二列の間隔の自動調整
+				new_parts_dict[ "company-bind-space" ] = int( standard_parts_dict[ "company-bind-space" ] * parts_relocate_rate[0] )
+				new_parts_dict[ "department-bind-space" ] = int( standard_parts_dict[ "department-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "name-bind-space" ] = int( standard_parts_dict[ "name-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "address-bind-space" ] = int( standard_parts_dict[ "address-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "our-name-bind-space" ] = int( standard_parts_dict[ "our-name-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "our-address-bind-space" ] = int( standard_parts_dict[ "our-address-bind-space" ] * parts_relocate_rate[0] )
 
-			auto_relocation_question_dialog.Destroy()
+		auto_relocation_question_dialog.Destroy()
 
 		#宛名画像生成インスタンスの作り直し
 		self.image_generator = atena_image_maker( papersize_widthheight_millimetre =  ( self.paper_size_data[ "width" ], self.paper_size_data[ "height" ] ), overwrite_settings = new_parts_dict )
