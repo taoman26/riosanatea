@@ -66,6 +66,8 @@ class atena_image_maker():
 		#万一、文字をものすごく大きくしたいという人がいましたら、ここを増やしてください。
 		self.postalcode_fontsize = int( self.width / 7 )
 		self.name_fontsize = int( self.width / 4 )
+		self.company_fontsize = int( self.width / 9 )
+		self.department_fontsize = int( self.width / 11 )
 		self.address_fontsize = int( self.width / 10 )
 		self.our_postalcode_fontsize = int( self.width / 11 )
 		self.our_name_fontsize = int( self.width / 10 )
@@ -75,6 +77,8 @@ class atena_image_maker():
 		#暫定的に宛名画像の幅にしておくが、あとでGUIオブジェクトから再決定関数を起動する
 		self.postalcode_fontmat_size = self.width
 		self.name_fontmat_size = self.width
+		self.company_fontmat_size = self.width
+		self.department_fontmat_size = self.width
 		self.address_fontmat_size = self.width
 		self.our_postalcode_fontmat_size = self.width
 		self.our_name_fontmat_size = self.width
@@ -83,7 +87,7 @@ class atena_image_maker():
 		#宛名レイアウトのデフォルト値
 		#文字サイズをかなり大きくとってから縮小する方針のため
 		#各フォントサイズはユーザーからは指定できないようにする。 GUIの入力欄は設置しない。
-		self.parts_dict = { "postalcode-position" : [ 45, 14 ], "postalcode-letter-areasize" : [ 4, 5 ], "postalcode-fontsize" : self.postalcode_fontsize, "postalcode-placement" : [ 7, 14, 22, 29, 36, 43 ], "postalcode-direction" : [ "right", "down" ], "name-position" : [ 52, 63 ], "name-areasize" : [ 12, 84 ], "name-bind-space" : 2, "name-fontsize" : self.name_fontsize, "name-direction" : [ "center", "center" ], "honorific-space" : 4, "twoname-honorific-mode" : 1, "address-position" : [ 94, 24 ], "address-areasize" : [ 7, 100 ], "address-bind-space" : 1, "address-fontsize" : self.address_fontsize, "address-direction" : [ "left", "down" ], "our-postalcode-position" : [ 6, 123 ], "our-postalcode-letter-areasize" : [ 3, 3 ], "our-postalcode-fontsize" : self.our_postalcode_fontsize, "our-postalcode-placement" : [ 4, 8, 13, 17, 21, 25 ], "our-postalcode-direction" : [ "right", "down" ], "our-name-position" : [ 11, 118 ], "our-name-areasize" : [ 6, 60 ], "our-name-bind-space" : 1, "our-name-fontsize" : self.our_name_fontsize, "our-name-direction" : [ "center", "up" ], "our-address-position" : [ 19, 118 ], "our-address-areasize" : [ 4, 80 ], "our-address-bind-space" : 1, "our-address-fontsize" : self.our_address_fontsize, "our-address-direction" : [ "right", "up" ], "A6-adjust-mode" : "center", "A6-adjust-point" : [ 0, 0 ], "resize％" : [ 100, 100 ], "redline-width" : 2, "fontfile" : "NotoSansCJK-Regular.ttc" }
+		self.parts_dict = { "postalcode-position" : [ 45, 14 ], "postalcode-letter-areasize" : [ 4, 5 ], "postalcode-fontsize" : self.postalcode_fontsize, "postalcode-placement" : [ 7, 14, 22, 29, 36, 43 ], "postalcode-direction" : [ "right", "down" ], "name-position" : [ 52, 63 ], "name-areasize" : [ 12, 84 ], "name-bind-space" : 2, "name-fontsize" : self.name_fontsize, "name-direction" : [ "center", "center" ], "honorific-space" : 4, "twoname-honorific-mode" : 1, "twoname-alignment-mode" : "bottom", "company-position" : [ 79, 24 ], "company-areasize" : [ 6, 80 ], "company-bind-space" : 1, "company-fontsize" : self.company_fontsize, "company-direction" : [ "left", "down" ], "department-position" : [ 72, 24 ], "department-areasize" : [ 6, 80 ], "department-bind-space" : 1, "department-fontsize" : self.department_fontsize, "department-direction" : [ "left", "down" ], "address-position" : [ 94, 24 ], "address-areasize" : [ 7, 100 ], "address-bind-space" : 1, "address-fontsize" : self.address_fontsize, "address-direction" : [ "left", "down" ], "our-postalcode-position" : [ 6, 123 ], "our-postalcode-letter-areasize" : [ 3, 3 ], "our-postalcode-fontsize" : self.our_postalcode_fontsize, "our-postalcode-placement" : [ 4, 8, 13, 17, 21, 25 ], "our-postalcode-direction" : [ "right", "down" ], "our-name-position" : [ 11, 118 ], "our-name-areasize" : [ 6, 60 ], "our-name-bind-space" : 1, "our-name-fontsize" : self.our_name_fontsize, "our-name-direction" : [ "center", "up" ], "our-address-position" : [ 19, 118 ], "our-address-areasize" : [ 4, 80 ], "our-address-bind-space" : 1, "our-address-fontsize" : self.our_address_fontsize, "our-address-direction" : [ "right", "up" ], "A6-adjust-mode" : "center", "A6-adjust-point" : [ 0, 0 ], "resize％" : [ 100, 100 ], "redline-width" : 2, "fontfile" : "NotoSansCJK-Regular.ttc" }
 
 		#はがき用のデフォルト配置の控え
 		#用紙サイズが変更された場合に、これをもとにレイアウト調整をするのでバックアップしておく
@@ -291,7 +295,12 @@ class atena_image_maker():
 				united_parts.paste( resized_part2, ( 0, 0 ) )
 				united_parts.paste( resized_part1, ( int( resized_part2.size[0] + space ), 0 ) )
 
-			#それ以外、揃え方が名前モードとか1行目が長いのなら下端で揃えて貼り付ける（）
+			#揃え方が名前モードで、かつ上寄せ設定の場合は上端で揃えて貼り付ける
+			elif alignment_mode == "name" and self.parts_dict.get( "twoname-alignment-mode" ) == "top":
+				united_parts.paste( resized_part2, ( 0, 0 ) )
+				united_parts.paste( resized_part1, ( int( resized_part2.size[0] + space ), 0 ) )
+
+			#それ以外、揃え方が名前モードで下寄せとか1行目が長いのなら下端で揃えて貼り付ける
 			else:
 				united_parts.paste( resized_part2, ( 0, united_parts.size[1] - resized_part2.size[1] ) )
 				united_parts.paste( resized_part1, ( int( resized_part2.size[0] + space ), united_parts.size[1] - resized_part1.size[1] ) )
@@ -423,6 +432,12 @@ class atena_image_maker():
 
 				pil_through_paste_greyscale( atena_image, honorific_image2, ( name_result.get( "start-point" )[0], name_result.get( "end-point" )[1] + int( self.parts_dict[ "honorific-space" ] * self.mm_pixel_rate ) ), 255 )
 
+		#宛先の会社名
+		self.parts_setting( image = atena_image, text1 = data_dict.get( "company", "" ), text2 = "", font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "company-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "company-position" ], size_xy = self.parts_dict[ "company-areasize" ], mat_size = self.company_fontmat_size, mm_space = self.parts_dict[ "company-bind-space" ], direction = self.parts_dict[ "company-direction" ], alignment_mode = "address" )
+
+		#宛先の部署名
+		self.parts_setting( image = atena_image, text1 = data_dict.get( "department", "" ), text2 = "", font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "department-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "department-position" ], size_xy = self.parts_dict[ "department-areasize" ], mat_size = self.department_fontmat_size, mm_space = self.parts_dict[ "department-bind-space" ], direction = self.parts_dict[ "department-direction" ], alignment_mode = "address" )
+
 		#宛先の住所
 		self.parts_setting( image = atena_image, text1 = data_dict.get( "address1", "" ), text2 = data_dict.get( "address2", "" ), font = self.parts_dict[ "fontfile" ], fontsize = int( self.parts_dict[ "address-fontsize" ] * font_scale ), position_xy = self.parts_dict[ "address-position" ], size_xy = self.parts_dict[ "address-areasize" ], mat_size = self.address_fontmat_size, mm_space = self.parts_dict[ "address-bind-space" ], direction = self.parts_dict[ "address-direction" ], alignment_mode = "address" )
 
@@ -481,6 +496,18 @@ class atena_image_maker():
 					honorific_height = self.mm_pixel_rate * ( namearea_height * 3 + self.parts_dict[ "honorific-space" ] )
 
 			self.paste_area_frame( base_image = atena_image, area_size = ( destination_name_areasize_x, destination_name_areasize_y ), area_position = [ i * self.mm_pixel_rate for i in self.parts_dict[ "name-position" ] ], area_direction = self.parts_dict[ "name-direction" ], line_width = frame_linewidth, additional_height = honorific_height )
+
+			#宛先の会社名の枠
+			if data_dict.get( "company", "" ) != "":
+				destination_company_areasize_x = self.mm_pixel_rate * self.parts_dict[ "company-areasize" ][0]
+				destination_company_areasize_y = self.mm_pixel_rate * self.parts_dict[ "company-areasize" ][1]
+				self.paste_area_frame( base_image = atena_image, area_size = ( destination_company_areasize_x, destination_company_areasize_y ), area_position = [ i * self.mm_pixel_rate for i in self.parts_dict[ "company-position" ] ], area_direction = self.parts_dict[ "company-direction" ], line_width = frame_linewidth )
+
+			#宛先の部署名の枠
+			if data_dict.get( "department", "" ) != "":
+				destination_department_areasize_x = self.mm_pixel_rate * self.parts_dict[ "department-areasize" ][0]
+				destination_department_areasize_y = self.mm_pixel_rate * self.parts_dict[ "department-areasize" ][1]
+				self.paste_area_frame( base_image = atena_image, area_size = ( destination_department_areasize_x, destination_department_areasize_y ), area_position = [ i * self.mm_pixel_rate for i in self.parts_dict[ "department-position" ] ], area_direction = self.parts_dict[ "department-direction" ], line_width = frame_linewidth )
 
 			#差出人の住所の枠
 			if data_dict.get( "our-address1", "" ) != "":
@@ -735,7 +762,7 @@ class frame_plus( wx.Frame ):
 
 		self.software_setting = { "window_maximize" : False, "window_size" : [ 1600, 760 ], "table-font" : "", "table-fontsize" : 0, "write-fileinfo-on-titlebar" : "filename"  }
 
-		self.column_etc_dictionary = { "column-postalcode" : 1, "column-address1" : 2, "column-address2" : 3, "column-name1" : 4, "column-name2" : 5, "enable-default-honorific" : True, "default-honorific" : "様", "printer-space-top,bottom,left,right" : [ 0, 0, 0, 0 ], "print-control" : False, "print-control-column" : 0, "print-sign" : "×", "print-or-ignore" : "ignore", "enable-honorific-in-table" : True, "column-honorific" : 6, "sampleimage-areaframe" : True, "upside-down-print" : False }
+		self.column_etc_dictionary = { "column-postalcode" : 1, "column-address1" : 2, "column-address2" : 3, "column-name1" : 4, "column-name2" : 5, "column-company" : 6, "column-department" : 7, "enable-default-honorific" : True, "default-honorific" : "様", "printer-space-top,bottom,left,right" : [ 0, 0, 0, 0 ], "print-control" : False, "print-control-column" : 0, "print-sign" : "×", "print-or-ignore" : "ignore", "enable-honorific-in-table" : True, "column-honorific" : 8, "sampleimage-areaframe" : True, "upside-down-print" : False }
 
 		self.our_data = { "our-postalcode-data" : "", "our-name1-data" : "", "our-name2-data" : "", "our-address1-data" : "", "our-address2-data" : "" }
 
@@ -1255,6 +1282,18 @@ class frame_plus( wx.Frame ):
 		#宛先氏名の敬称をバインド
 		self.destination_honorific_mode.Bind( wx.EVT_COMBOBOX, self.change_destination_honorific_mode )
 
+		#宛名2人目の配置選択
+		self.dn_array_alignment = [ "下寄せ", "上寄せ" ]
+		self.destination_twoname_alignment_mode = wx.ComboBox( self.left_panel, wx.ID_ANY, "配置", choices = self.dn_array_alignment, style = wx.CB_READONLY )
+
+		#1行にまとめる
+		self.twoname_alignment_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.twoname_alignment_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "宛名2人目の配置：" ), 0 )
+		self.twoname_alignment_sizer.Add( self.destination_twoname_alignment_mode, 0, wx.LEFT, 10 )
+
+		#宛名2人目の配置をバインド
+		self.destination_twoname_alignment_mode.Bind( wx.EVT_COMBOBOX, self.change_destination_twoname_alignment_mode )
+
 
 		#枠（StaticBoxSizer）に入れる
 		self.destination_name_sbox = wx.StaticBox( self.left_panel, wx.ID_ANY, "●宛先氏名●" )
@@ -1264,6 +1303,7 @@ class frame_plus( wx.Frame ):
 		self.destination_name_sb_sizer.Add( self.destination_name_size_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 		self.destination_name_sb_sizer.Add( self.destination_name_space_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 		self.destination_name_sb_sizer.Add( self.honorific_attention_sizer, 0, wx.LEFT | wx.RIGHT, 10 )
+		self.destination_name_sb_sizer.Add( self.twoname_alignment_sizer, 0, wx.LEFT | wx.RIGHT | wx.TOP, 10 )
 
 
 		#○○○○○宛先住所○○○○○
@@ -1334,6 +1374,84 @@ class frame_plus( wx.Frame ):
 		self.destination_address_sb_sizer.Add( self.destination_address_direction_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 		self.destination_address_sb_sizer.Add( self.destination_address_size_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 		self.destination_address_sb_sizer.Add( self.destination_address_space_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
+
+
+		#○○○○○宛先会社名○○○○○
+
+		#宛先会社名の起点となる位置
+		self.destination_company_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_company_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
+		#1行にまとめる
+		self.destination_company_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.destination_company_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
+		self.destination_company_position_sizer.Add( self.destination_company_position_x )
+		self.destination_company_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm、下に" ) )
+		self.destination_company_position_sizer.Add( self.destination_company_position_y )
+		self.destination_company_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm" ) )
+
+		#宛先会社名の位置をバインド
+		self.destination_company_position_x.Bind( wx.EVT_SPINCTRL, self.send_destination_company_position_x )
+		self.destination_company_position_y.Bind( wx.EVT_SPINCTRL, self.send_destination_company_position_y )
+
+		#宛先会社名を書く領域のサイズ上限
+		self.destination_company_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_company_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
+		#1行にまとめる
+		self.destination_company_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.destination_company_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "会社名の幅：" ) )
+		self.destination_company_size_sizer.Add( self.destination_company_size_x )
+		self.destination_company_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm、高さ：" ) )
+		self.destination_company_size_sizer.Add( self.destination_company_size_y )
+		self.destination_company_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm 以内" ) )
+
+		#宛先会社名のサイズの入力欄をバインド
+		self.destination_company_size_x.Bind( wx.EVT_SPINCTRL, self.send_destination_company_size_x )
+		self.destination_company_size_y.Bind( wx.EVT_SPINCTRL, self.send_destination_company_size_y )
+
+		#枠（StaticBoxSizer）に入れる
+		self.destination_company_sbox = wx.StaticBox( self.left_panel, wx.ID_ANY, "●宛先会社名●" )
+		self.destination_company_sb_sizer = wx.StaticBoxSizer( self.destination_company_sbox, wx.VERTICAL )
+		self.destination_company_sb_sizer.Add( self.destination_company_position_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
+		self.destination_company_sb_sizer.Add( self.destination_company_size_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
+
+
+		#○○○○○宛先部署名○○○○○
+
+		#宛先部署名の起点となる位置
+		self.destination_department_position_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_department_position_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
+		#1行にまとめる
+		self.destination_department_position_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.destination_department_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "位置：左上から右に" ) )
+		self.destination_department_position_sizer.Add( self.destination_department_position_x )
+		self.destination_department_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm、下に" ) )
+		self.destination_department_position_sizer.Add( self.destination_department_position_y )
+		self.destination_department_position_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm" ) )
+
+		#宛先部署名の位置をバインド
+		self.destination_department_position_x.Bind( wx.EVT_SPINCTRL, self.send_destination_department_position_x )
+		self.destination_department_position_y.Bind( wx.EVT_SPINCTRL, self.send_destination_department_position_y )
+
+		#宛先部署名を書く領域のサイズ上限
+		self.destination_department_size_x = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 450, size = ( 110, 30 ) )
+		self.destination_department_size_y = wx.SpinCtrl( self.left_panel, wx.ID_ANY, min = 0, max = 500, size = ( 110, 30 ) )
+		#1行にまとめる
+		self.destination_department_size_sizer = wx.BoxSizer( wx.HORIZONTAL )
+		self.destination_department_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "部署名の幅：" ) )
+		self.destination_department_size_sizer.Add( self.destination_department_size_x )
+		self.destination_department_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm、高さ：" ) )
+		self.destination_department_size_sizer.Add( self.destination_department_size_y )
+		self.destination_department_size_sizer.Add( wx.StaticText( self.left_panel, wx.ID_ANY, "mm 以内" ) )
+
+		#宛先部署名のサイズの入力欄をバインド
+		self.destination_department_size_x.Bind( wx.EVT_SPINCTRL, self.send_destination_department_size_x )
+		self.destination_department_size_y.Bind( wx.EVT_SPINCTRL, self.send_destination_department_size_y )
+
+		#枠（StaticBoxSizer）に入れる
+		self.destination_department_sbox = wx.StaticBox( self.left_panel, wx.ID_ANY, "●宛先部署名●" )
+		self.destination_department_sb_sizer = wx.StaticBoxSizer( self.destination_department_sbox, wx.VERTICAL )
+		self.destination_department_sb_sizer.Add( self.destination_department_position_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
+		self.destination_department_sb_sizer.Add( self.destination_department_size_sizer, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10 )
 
 
 		#○○○○○差出人の郵便番号○○○○○
@@ -1645,6 +1763,10 @@ class frame_plus( wx.Frame ):
 		self.left_sizer.Add( wx.StaticLine( self.left_panel ), 0, wx.TOP, 10 )
 		self.left_sizer.Add( self.destination_address_sb_sizer )
 		self.left_sizer.Add( wx.StaticLine( self.left_panel ), 0, wx.TOP, 10 )
+		self.left_sizer.Add( self.destination_company_sb_sizer )
+		self.left_sizer.Add( wx.StaticLine( self.left_panel ), 0, wx.TOP, 10 )
+		self.left_sizer.Add( self.destination_department_sb_sizer )
+		self.left_sizer.Add( wx.StaticLine( self.left_panel ), 0, wx.TOP, 10 )
 		self.left_sizer.Add( self.our_postalcode_sb_sizer )
 		self.left_sizer.Add( wx.StaticLine( self.left_panel ), 0, wx.TOP, 10 )
 		self.left_sizer.Add( self.our_name_sb_sizer )
@@ -1687,6 +1809,8 @@ class frame_plus( wx.Frame ):
 		self.dest_address2_column = wx.SpinCtrl( self.appropriate_tab_panel, wx.ID_ANY, value = str( self.column_etc_dictionary.get( "column-address2", "0" ) + 1 ) , min = 1, max = 15, size = ( 110, 30 )  )
 		self.dest_name1_column = wx.SpinCtrl( self.appropriate_tab_panel, wx.ID_ANY, value = str( self.column_etc_dictionary.get( "column-name1", "0" ) + 1 ) , min = 1, max = 15, size = ( 110, 30 )  )
 		self.dest_name2_column = wx.SpinCtrl( self.appropriate_tab_panel, wx.ID_ANY, value = str( self.column_etc_dictionary.get( "column-name2", "0" ) + 1 ) , min = 1, max = 15, size = ( 110, 30 )  )
+		self.dest_company_column = wx.SpinCtrl( self.appropriate_tab_panel, wx.ID_ANY, value = str( self.column_etc_dictionary.get( "column-company", "0" ) + 1 ) , min = 1, max = 15, size = ( 110, 30 )  )
+		self.dest_department_column = wx.SpinCtrl( self.appropriate_tab_panel, wx.ID_ANY, value = str( self.column_etc_dictionary.get( "column-department", "0" ) + 1 ) , min = 1, max = 15, size = ( 110, 30 )  )
 
 		#バインド
 		self.dest_postalcode_column.Bind( wx.EVT_SPINCTRL, self.send_dest_postalcode_column )
@@ -1694,6 +1818,8 @@ class frame_plus( wx.Frame ):
 		self.dest_address2_column.Bind( wx.EVT_SPINCTRL, self.send_dest_address2_column )
 		self.dest_name1_column.Bind( wx.EVT_SPINCTRL, self.send_dest_name1_column )
 		self.dest_name2_column.Bind( wx.EVT_SPINCTRL, self.send_dest_name2_column )
+		self.dest_company_column.Bind( wx.EVT_SPINCTRL, self.send_dest_company_column )
+		self.dest_department_column.Bind( wx.EVT_SPINCTRL, self.send_dest_department_column )
 
 		#1行……だと長過ぎてウィンドウに収まらないので2行にまとめる
 		self.destination_column_sizer1 = wx.BoxSizer( wx.HORIZONTAL )
@@ -1710,11 +1836,18 @@ class frame_plus( wx.Frame ):
 		self.destination_column_sizer2.Add( wx.StaticText( self.appropriate_tab_panel, wx.ID_ANY, "、　宛先氏名（2列め）：" ) )
 		self.destination_column_sizer2.Add( self.dest_name2_column )
 
+		self.destination_column_sizer3 = wx.BoxSizer( wx.HORIZONTAL )
+		self.destination_column_sizer3.Add( wx.StaticText( self.appropriate_tab_panel, wx.ID_ANY, "会社名：" ) )
+		self.destination_column_sizer3.Add( self.dest_company_column )
+		self.destination_column_sizer3.Add( wx.StaticText( self.appropriate_tab_panel, wx.ID_ANY, "、　部署：" ) )
+		self.destination_column_sizer3.Add( self.dest_department_column )
+
 		#枠（StaticBoxSizer）に入れる
 		self.ap_destination_sbox = wx.StaticBox( self.appropriate_tab_panel, wx.ID_ANY, "●表中の何列目を宛先の各項目に割り当てるか●" )
 		self.ap_destination_sb_sizer = wx.StaticBoxSizer( self.ap_destination_sbox, wx.VERTICAL )
 		self.ap_destination_sb_sizer.Add( self.destination_column_sizer1, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 6 )
-		self.ap_destination_sb_sizer.Add( self.destination_column_sizer2, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 6 )
+		self.ap_destination_sb_sizer.Add( self.destination_column_sizer2, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 6 )
+		self.ap_destination_sb_sizer.Add( self.destination_column_sizer3, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 6 )
 
 
 		#印刷の可否を特定の列の内容で判別する
@@ -2109,6 +2242,14 @@ class frame_plus( wx.Frame ):
 		else:
 			self.destination_honorific_mode.SetSelection(2)
 
+		#宛名2人目の配置選択を初期化する
+		self.default_twoname_alignment_mode = self.image_generator.get_parts_data( "twoname-alignment-mode" )
+
+		if self.default_twoname_alignment_mode == "top":
+			self.destination_twoname_alignment_mode.SetSelection(1)
+		else:
+			self.destination_twoname_alignment_mode.SetSelection(0)
+
 		#○○○○○宛先住所の位置などの入力を初期化する○○○○○
 		self.default_destination_address_position = self.image_generator.get_parts_data( "address-position" )
 		self.destination_address_position_x.SetValue( str( self.default_destination_address_position[0] ) )
@@ -2136,6 +2277,24 @@ class frame_plus( wx.Frame ):
 			self.destination_address_direction_vertical.SetSelection( 1 )
 		else:
 			self.destination_address_direction_vertical.SetSelection( 2 )
+
+		#○○○○○会社名の位置などの入力を初期化する○○○○○
+		self.default_destination_company_position = self.image_generator.get_parts_data( "company-position" )
+		self.destination_company_position_x.SetValue( str( self.default_destination_company_position[0] ) )
+		self.destination_company_position_y.SetValue( str( self.default_destination_company_position[1] ) )
+
+		self.default_destination_company_size = self.image_generator.get_parts_data( "company-areasize" )
+		self.destination_company_size_x.SetValue( str( self.default_destination_company_size[0] ) )
+		self.destination_company_size_y.SetValue( str( self.default_destination_company_size[1] ) )
+
+		#○○○○○部署名の位置などの入力を初期化する○○○○○
+		self.default_destination_department_position = self.image_generator.get_parts_data( "department-position" )
+		self.destination_department_position_x.SetValue( str( self.default_destination_department_position[0] ) )
+		self.destination_department_position_y.SetValue( str( self.default_destination_department_position[1] ) )
+
+		self.default_destination_department_size = self.image_generator.get_parts_data( "department-areasize" )
+		self.destination_department_size_x.SetValue( str( self.default_destination_department_size[0] ) )
+		self.destination_department_size_y.SetValue( str( self.default_destination_department_size[1] ) )
 
 		#○○○○○差出人の郵便番号の位置などの入力を初期化する○○○○○
 		self.default_our_postalcode_position = self.image_generator.get_parts_data( "our-postalcode-position" )
@@ -2357,6 +2516,30 @@ class frame_plus( wx.Frame ):
 	def send_our_address_space( self, event ):
 		self.changedict_image_restructure_int( dict_key = "our-address-bind-space", value = self.our_address_space.GetValue() )
 
+	def send_destination_company_position_x( self, event ):
+		self.changedict_image_restructure_int( dict_key = "company-position", value = self.destination_company_position_x.GetValue(), list_position = 0 )
+
+	def send_destination_company_position_y( self, event ):
+		self.changedict_image_restructure_int( dict_key = "company-position", value = self.destination_company_position_y.GetValue(), list_position = 1 )
+
+	def send_destination_company_size_x( self, event ):
+		self.changedict_image_restructure_int( dict_key = "company-areasize", value = self.destination_company_size_x.GetValue(), list_position = 0 )
+
+	def send_destination_company_size_y( self, event ):
+		self.changedict_image_restructure_int( dict_key = "company-areasize", value = self.destination_company_size_y.GetValue(), list_position = 1 )
+
+	def send_destination_department_position_x( self, event ):
+		self.changedict_image_restructure_int( dict_key = "department-position", value = self.destination_department_position_x.GetValue(), list_position = 0 )
+
+	def send_destination_department_position_y( self, event ):
+		self.changedict_image_restructure_int( dict_key = "department-position", value = self.destination_department_position_y.GetValue(), list_position = 1 )
+
+	def send_destination_department_size_x( self, event ):
+		self.changedict_image_restructure_int( dict_key = "department-areasize", value = self.destination_department_size_x.GetValue(), list_position = 0 )
+
+	def send_destination_department_size_y( self, event ):
+		self.changedict_image_restructure_int( dict_key = "department-areasize", value = self.destination_department_size_y.GetValue(), list_position = 1 )
+
 	#以下の余白指定と列の割り当ては、レイアウト辞書内の値ではないので、送る関数が違う
 	def send_print_space_top( self, event ):
 		self.change_columndict_image_restructure_int( dict_key = "printer-space-top,bottom,left,right", value = self.print_space_top.GetValue(), list_position = 0, make_atena_image = False )
@@ -2399,6 +2582,14 @@ class frame_plus( wx.Frame ):
 
 	def send_dest_name2_column( self, event ):
 		self.change_columndict_image_restructure_int( dict_key = "column-name2", value = self.dest_name2_column.GetValue() - 1, list_position = None, image_reflesh = False )
+		self.set_grid_labels()
+
+	def send_dest_company_column( self, event ):
+		self.change_columndict_image_restructure_int( dict_key = "column-company", value = self.dest_company_column.GetValue() - 1, list_position = None, image_reflesh = False )
+		self.set_grid_labels()
+
+	def send_dest_department_column( self, event ):
+		self.change_columndict_image_restructure_int( dict_key = "column-department", value = self.dest_department_column.GetValue() - 1, list_position = None, image_reflesh = False )
 		self.set_grid_labels()
 
 	def send_honorific_column( self, event ):
@@ -2530,6 +2721,15 @@ class frame_plus( wx.Frame ):
 			self.image_generator.set_parts_data( "twoname-honorific-mode", 2 )
 		else:
 			self.image_generator.set_parts_data( "twoname-honorific-mode", 3 )
+
+		self.show_sample_image( cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
+
+	#宛名2人目の配置を上寄せか下寄せか切り替える操作
+	def change_destination_twoname_alignment_mode( self, event ):
+		if self.destination_twoname_alignment_mode.GetSelection() == 1:
+			self.image_generator.set_parts_data( "twoname-alignment-mode", "top" )
+		else:
+			self.image_generator.set_parts_data( "twoname-alignment-mode", "bottom" )
 
 		self.show_sample_image( cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
 
@@ -2756,6 +2956,8 @@ class frame_plus( wx.Frame ):
 
 				#各パーツの位置の自動調整
 				new_parts_dict[ "postalcode-position" ] = list_composite( standard_parts_dict[ "postalcode-position" ], parts_relocate_rate, 1 )
+				new_parts_dict[ "company-position" ] = list_composite( standard_parts_dict[ "company-position" ], parts_relocate_rate, 1 )
+				new_parts_dict[ "department-position" ] = list_composite( standard_parts_dict[ "department-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "name-position" ] = list_composite( standard_parts_dict[ "name-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "address-position" ] = list_composite( standard_parts_dict[ "address-position" ], parts_relocate_rate, 1 )
 				new_parts_dict[ "our-postalcode-position" ] = list_composite( standard_parts_dict[ "our-postalcode-position" ], parts_relocate_rate, 1 )
@@ -2764,6 +2966,8 @@ class frame_plus( wx.Frame ):
 
 				#各パーツを収める範囲の自動調整
 				new_parts_dict[ "postalcode-letter-areasize" ] = list_composite( standard_parts_dict[ "postalcode-letter-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
+				new_parts_dict[ "company-areasize" ] = list_composite( standard_parts_dict[ "company-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
+				new_parts_dict[ "department-areasize" ] = list_composite( standard_parts_dict[ "department-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "name-areasize" ] = list_composite( standard_parts_dict[ "name-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "address-areasize" ] = list_composite( standard_parts_dict[ "address-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
 				new_parts_dict[ "our-postalcode-letter-areasize" ] = list_composite( standard_parts_dict[ "our-postalcode-letter-areasize" ], parts_relocate_rate, parts_size_adjust_rate )
@@ -2775,12 +2979,14 @@ class frame_plus( wx.Frame ):
 				new_parts_dict[ "our-postalcode-placement" ] = [ int( i * parts_relocate_rate[0] * parts_size_adjust_rate ) for i in standard_parts_dict[ "our-postalcode-placement" ] ]
 
 				#住所氏名における二列の間隔の自動調整
+				new_parts_dict[ "company-bind-space" ] = int( standard_parts_dict[ "company-bind-space" ] * parts_relocate_rate[0] )
+				new_parts_dict[ "department-bind-space" ] = int( standard_parts_dict[ "department-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "name-bind-space" ] = int( standard_parts_dict[ "name-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "address-bind-space" ] = int( standard_parts_dict[ "address-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "our-name-bind-space" ] = int( standard_parts_dict[ "our-name-bind-space" ] * parts_relocate_rate[0] )
 				new_parts_dict[ "our-address-bind-space" ] = int( standard_parts_dict[ "our-address-bind-space" ] * parts_relocate_rate[0] )
 
-			auto_relocation_question_dialog.Destroy()
+		auto_relocation_question_dialog.Destroy()
 
 		#宛名画像生成インスタンスの作り直し
 		self.image_generator = atena_image_maker( papersize_widthheight_millimetre =  ( self.paper_size_data[ "width" ], self.paper_size_data[ "height" ] ), overwrite_settings = new_parts_dict )
@@ -2871,7 +3077,7 @@ class frame_plus( wx.Frame ):
 			else:
 				sample_honorific = "様"
 
-			data_example = { "postal-code" : self.destination_postalcode_example, "name1" : self.destination_name1_example, "name2" : self.destination_name2_example, "address1" : self.destination_address1_example, "address2" : self.destination_address2_example, "honorific" : sample_honorific, "our-postal-code" : self.our_data[ "our-postalcode-data" ], "our-name1" : self.our_data[ "our-name1-data" ], "our-name2" : self.our_data[ "our-name2-data" ], "our-address1" : self.our_data[ "our-address1-data" ], "our-address2" : self.our_data[ "our-address2-data" ] }
+			data_example = { "postal-code" : self.destination_postalcode_example, "name1" : self.destination_name1_example, "name2" : self.destination_name2_example, "address1" : self.destination_address1_example, "address2" : self.destination_address2_example, "company" : "株式会社サンプル", "department" : "営業部", "honorific" : sample_honorific, "our-postal-code" : self.our_data[ "our-postalcode-data" ], "our-name1" : self.our_data[ "our-name1-data" ], "our-name2" : self.our_data[ "our-name2-data" ], "our-address1" : self.our_data[ "our-address1-data" ], "our-address2" : self.our_data[ "our-address2-data" ] }
 
 			#宛名画像の取得
 			self.sample_grayscale_image = self.image_generator.get_atena_image( data_example, area_frame = self.column_etc_dictionary[ "sampleimage-areaframe" ] )
@@ -3251,7 +3457,7 @@ class frame_plus( wx.Frame ):
 	#列のラベルを設定する
 	def set_grid_labels( self ):
 		#役割のある列（選択によらない必須のもの）のkeyと貼り付けたいラベルの対応
-		special_labels = [ ["column-postalcode", "郵便番号" ], [ "column-address1", "宛先住所" ], [ "column-address2", "宛先住所（二列目）" ], [ "column-name1", "宛名" ], [ "column-name2", "宛名（二人目）" ] ]
+		special_labels = [ ["column-postalcode", "郵便番号" ], [ "column-address1", "宛先住所" ], [ "column-address2", "宛先住所（二列目）" ], [ "column-name1", "宛名" ], [ "column-name2", "宛名（二人目）" ], [ "column-company", "会社名" ], [ "column-department", "部署" ] ]
 
 		#役割をもたせた列の最大値を求める
 		special_column = [ self.column_etc_dictionary[ x[0] ] for x in special_labels ]
@@ -3471,7 +3677,7 @@ class frame_plus( wx.Frame ):
 			xy_plusminus = row_col_plus_minus_dialog.get_row_col_add_del()
 
 			#役割をもたせた列（住所、氏名、敬称、可否）の最大値を求めておく
-			special_labels = [ ["column-postalcode", "郵便番号" ], [ "column-address1", "宛先住所" ], [ "column-address2", "宛先住所（二列目）" ], [ "column-name1", "宛名" ], [ "column-name2", "宛名（二人目）" ] ]
+			special_labels = [ ["column-postalcode", "郵便番号" ], [ "column-address1", "宛先住所" ], [ "column-address2", "宛先住所（二列目）" ], [ "column-name1", "宛名" ], [ "column-name2", "宛名（二人目）" ], [ "column-company", "会社名" ], [ "column-department", "部署" ] ]
 			special_column = [ self.column_etc_dictionary[ x[0] ] for x in special_labels ]
 			if self.column_etc_dictionary[ "print-control" ] is True:
 				special_column.append( self.column_etc_dictionary[ "print-control-column" ] )
@@ -3753,6 +3959,9 @@ class frame_plus( wx.Frame ):
 				dest_name1 = current_line[ self.column_etc_dictionary[ "column-name1" ] ]
 				dest_name2 = current_line[ self.column_etc_dictionary[ "column-name2" ] ]
 
+				dest_company = current_line[ self.column_etc_dictionary[ "column-company" ] ]
+				dest_department = current_line[ self.column_etc_dictionary[ "column-department" ] ]
+
 				#敬称
 				#表中の?列目の敬称を使用する設定で、指定された列が実在して（列数の範囲内）、その列に記述があった場合
 				if self.column_etc_dictionary[ "enable-honorific-in-table" ] is True and self.column_etc_dictionary[ "column-honorific" ] < len( current_line ) and current_line[ self.column_etc_dictionary[ "column-honorific" ] ] != "":
@@ -3765,7 +3974,7 @@ class frame_plus( wx.Frame ):
 				else:
 					honorific = ""
 
-				print_data = { "postal-code" : dest_postal_code, "name1" : dest_name1, "name2" : dest_name2, "address1" : dest_address1, "address2" : dest_address2, "honorific" : honorific, "our-postal-code" : self.our_data[ "our-postalcode-data" ], "our-name1" : self.our_data[ "our-name1-data" ], "our-name2" : self.our_data[ "our-name2-data" ], "our-address1" : self.our_data[ "our-address1-data" ], "our-address2" : self.our_data[ "our-address2-data" ] }
+				print_data = { "postal-code" : dest_postal_code, "name1" : dest_name1, "name2" : dest_name2, "address1" : dest_address1, "address2" : dest_address2, "company" : dest_company, "department" : dest_department, "honorific" : honorific, "our-postal-code" : self.our_data[ "our-postalcode-data" ], "our-name1" : self.our_data[ "our-name1-data" ], "our-name2" : self.our_data[ "our-name2-data" ], "our-address1" : self.our_data[ "our-address1-data" ], "our-address2" : self.our_data[ "our-address2-data" ] }
 
 				print_grayscale_image = self.image_generator.get_cutted_atena_image( data_dict = print_data, space_tblr_mm_list = self.column_etc_dictionary[ "printer-space-top,bottom,left,right" ], cutted_atena_image_upside_down = self.column_etc_dictionary[ "upside-down-print" ] )
 
@@ -4144,6 +4353,9 @@ class AtenaPreviewDialog( wx.Dialog ):
 		d_name1 = current_destination[ self.column_dict[ "column-name1" ] ]
 		d_name2 = current_destination[ self.column_dict[ "column-name2" ] ]
 
+		d_company = current_destination[ self.column_dict[ "column-company" ] ]
+		d_department = current_destination[ self.column_dict[ "column-department" ] ]
+
 		#敬称
 		#表中の?列目の敬称を使用する設定で、指定された列が実在して（列数の範囲内）、その列に記述があった場合
 		if self.column_dict[ "enable-honorific-in-table" ] is True and self.column_dict[ "column-honorific" ] < len( current_destination ) and current_destination[ self.column_dict[ "column-honorific" ] ] != "":
@@ -4156,7 +4368,7 @@ class AtenaPreviewDialog( wx.Dialog ):
 		else:
 			honorific = ""
 
-		print_data = { "postal-code" : d_postal_code, "name1" : d_name1, "name2" : d_name2, "address1" : d_address1, "address2" : d_address2, "honorific" : honorific, "our-postal-code" : self.our_dict[ "our-postalcode-data" ], "our-name1" : self.our_dict[ "our-name1-data" ], "our-name2" : self.our_dict[ "our-name2-data" ], "our-address1" : self.our_dict[ "our-address1-data" ], "our-address2" : self.our_dict[ "our-address2-data" ] }
+		print_data = { "postal-code" : d_postal_code, "name1" : d_name1, "name2" : d_name2, "address1" : d_address1, "address2" : d_address2, "company" : d_company, "department" : d_department, "honorific" : honorific, "our-postal-code" : self.our_dict[ "our-postalcode-data" ], "our-name1" : self.our_dict[ "our-name1-data" ], "our-name2" : self.our_dict[ "our-name2-data" ], "our-address1" : self.our_dict[ "our-address1-data" ], "our-address2" : self.our_dict[ "our-address2-data" ] }
 
 		return print_data
 
